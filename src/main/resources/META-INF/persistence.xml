@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+    http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0">
+
+	<persistence-unit name="money2020"
+		transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<non-jta-data-source>dataSource</non-jta-data-source>
+		<class>com.proximityperks.data.impl.UserImpl</class>
+		<class>com.proximityperks.data.impl.LocationImpl</class>
+		<class>com.proximityperks.data.impl.MerchantImpl</class>
+		<class>com.proximityperks.data.impl.TransactionImpl</class>
+		<class>com.proximityperks.data.impl.UserAccountImpl</class>
+		<class>com.proximityperks.data.impl.UserPerkImpl</class>
+		<properties>
+			<!-- Added this to produce formatted sql statements -->
+			<property name="hibernate.format_sql" value="false" />
+			<!--  <property name="hibernate.hbm2ddl.auto" value="" />-->
+			<property name="hibernate.cascade" value="PERSIST" />
+			<property name="hibernate.cache.use_query_cache" value="false" />
+			<property name="hibernate.connection.autocommit" value="false" />
+			<!-- Not using second level cache -->
+			<property name="hibernate.cache.use_second_level_cache"
+				value="false" />
+			<property name="hibernate.generate_statistics" value="true" />
+			<property name="hibernate.default_batch_fetch_size" value="32" />
+			<property name="hibernate.jdbc.batch_size" value="32" />
+		</properties>
+	</persistence-unit>
+</persistence>
