@@ -16,4 +16,5 @@
 		ignore-resource-not-found="true" ignore-unresolvable="true" order="0" />
 	<import resource="classpath:proximityperks-data.xml" />
 	<import resource="classpath:proximityperks-datasource.xml" />
+	<import resource="classpath:proximityperks-common.xml" />
 </beans>
