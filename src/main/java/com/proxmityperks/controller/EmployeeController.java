@@ -28,7 +28,7 @@ public class EmployeeController {
 	// Map to store employees, ideally we should use database
 	Map<Integer, Employee> empData = new HashMap<Integer, Employee>();
 
-	@RequestMapping(value = EmpRestURIConstants.DUMMY_EMP, method = RequestMethod.GET)
+	@RequestMapping(value = APIRequestMappings.DUMMY_EMP, method = RequestMethod.GET)
 	public @ResponseBody
 	Employee getDummyEmployee() {
 		logger.info("Start getDummyEmployee");

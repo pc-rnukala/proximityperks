@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.Charset;
+import java.util.UUID;
 
 import junit.framework.Assert;
 
@@ -32,7 +33,7 @@ import com.proxmityperks.controller.APIRequestMappings;
 @ContextConfiguration(locations = {
 		"file:src/main/webapp/WEB-INF/spring/appServlet/servlet-context.xml",
 		"file:src/main/webapp/WEB-INF/spring/root-context.xml" })
-public class TestEmployeeController {
+public class TestLoginController {
 	public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(
 			MediaType.APPLICATION_JSON.getType(),
 			MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
@@ -47,9 +48,29 @@ public class TestEmployeeController {
 	}
 
 	@Test
-	public void testGetDummyEmployee() throws Exception {
-		ResultActions resultActions = mockMvc
-				.perform(get(APIRequestMappings.DUMMY_EMP));
+	public void testLoginUser() throws Exception {
+		String userName = "testUserId1@personalcapital.com";
+		String password = "password";
+		ResultActions resultActions = mockMvc.perform(post(
+				APIRequestMappings.LOGIN_USER).param("userName", userName)
+				.param("password", password));
+		resultActions.andExpect(status().isOk());
+		resultActions.andExpect(content().contentType(APPLICATION_JSON_UTF8));
+		MvcResult result = resultActions.andReturn();
+		MockHttpServletResponse response = result.getResponse();
+		String resultStr = response.getContentAsString();
+		Assert.assertNotNull(resultStr);
+	}
+
+	@Test
+	public void testCreateUser() throws Exception {
+		String userName = "testuser" + UUID.randomUUID().toString()
+				+ "@personalcapital.com";
+		String password = "password";
+		String phoneNumber="4154206686";
+		ResultActions resultActions = mockMvc.perform(post(
+				APIRequestMappings.CREATE_USER).param("userName", userName)
+				.param("password", password).param("phoneNumber", phoneNumber));
 		resultActions.andExpect(status().isOk());
 		resultActions.andExpect(content().contentType(APPLICATION_JSON_UTF8));
 		MvcResult result = resultActions.andReturn();
