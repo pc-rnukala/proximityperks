@@ -8,7 +8,6 @@ public class APIRequestMappings {
 	public static final String CREATE_EMP = "/rest/emp/create";
 	public static final String DELETE_EMP = "/rest/emp/delete/{id}";
 	
-	
 	/**
 	 * Login controller
 	 */
@@ -17,5 +16,14 @@ public class APIRequestMappings {
 	public static final String SWITCH_USER="/api/login/switchUser";
 	public static final String LOGOUT_USER="/api/login/logoutUser";
 	public static final String CREATE_USER="/api/login/createUser";
-
+	
+	/**
+	 * Account controller
+	 */
+	public static final String GET_ACCOUNTS="/api/account/getAccounts";
+	
+	/**
+	 * Transaction controller
+	 */
+	public static final String GET_TRANSACTIONS="/api/transaction/getTransactions";
 }
