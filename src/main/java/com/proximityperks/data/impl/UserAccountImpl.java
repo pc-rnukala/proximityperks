@@ -82,7 +82,7 @@ public class UserAccountImpl implements UserAccount {
 	 */
 	@Override
 	@Column(name = "name")
-	@JsonProperty("userAccountName")
+	@JsonProperty("name")
 	public String getName() {
 		return name;
 	}
