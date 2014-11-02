@@ -1,7 +1,9 @@
 package com.proximityperks.modo.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -13,6 +15,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.proximityperks.dao.UserPerkDao;
+import com.proximityperks.dao.UserTransactionDao;
 import com.proximityperks.data.User;
 import com.proximityperks.data.UserPerk;
 import com.proximityperks.data.impl.UserPerkImpl;
@@ -36,6 +39,9 @@ public class ModoServiceImpl implements ModoService {
 
 	@Autowired
 	private UserPerkDao userPerkDao;
+
+	@Autowired
+	private UserTransactionDao userTransactionDao;
 
 	/**
 	 * @return
@@ -127,25 +133,14 @@ public class ModoServiceImpl implements ModoService {
 	 * @param latitude
 	 * @return
 	 */
-	public List<MerchantLocation> getMerchantLocations(double longitude,
-			double latitude) {
-		/*List<MerchantLocation> merchantLocations = modoDelegate.getMerchants(
-				longitude, latitude);*/
-		List<MerchantLocation> merchantLocations = new ArrayList<>();
-		MerchantLocation merchantLocation = new MerchantLocation();
-		merchantLocation.setMerchantId("8161fa6cd0c24c6ab9606252713ab571");
-		merchantLocation.setMerchantName("Starbucks Aria");
-		merchantLocation.setLocationId("451427e2ec874abcaa13200c1443ab8b");
-		merchantLocation.setLatitude(36.161578);
-		merchantLocation.setLongitude(-115.17324);
-		merchantLocations.add(merchantLocation);
-		merchantLocation = new MerchantLocation();
-		merchantLocation.setMerchantId("3da28d76b4af44a293baea703644643b");
-		merchantLocation.setMerchantName("Gucci");
-		merchantLocation.setLocationId("920e8565acf649aea98dc1ea848d60ca");
-		merchantLocation.setLatitude(-115.17369);
-		merchantLocation.setLongitude(36.107159);
-		merchantLocations.add(merchantLocation);
+	public List<MerchantLocation> getMerchantLocations(User user,
+			double longitude, double latitude) {
+		/*
+		 * List<MerchantLocation> merchantLocations = modoDelegate.getMerchants(
+		 * longitude, latitude);
+		 */
+		List<MerchantLocation> merchantLocations = userTransactionDao
+				.getMerchantLocations(user);
 		return merchantLocations;
 	}
 
@@ -154,7 +149,7 @@ public class ModoServiceImpl implements ModoService {
 	 * @param merchantId
 	 * @param locationId
 	 */
-	public List<UserPerk> getOffers(User user, String merchantId,
+	public Map<String, UserPerk> getOffers(User user, String merchantId,
 			String locationId) {
 		OfferRequest offerRequest = new OfferRequest();
 		offerRequest.setAccountId(user.getModoAccountId());
@@ -170,15 +165,16 @@ public class ModoServiceImpl implements ModoService {
 		giverFilter.add("merchant");
 		offerRequest.setGiverFilter(new Gson().toJson(giverFilter));
 		JsonObject responseData = modoDelegate.getOffers(offerRequest);
-		List<UserPerk> userPerks = parseOffersResponse(user, responseData);
+		Map<String, UserPerk> userPerks = parseOffersResponse(user,
+				responseData);
 		return userPerks;
 	}
 
-	private List<UserPerk> parseOffersResponse(User user,
+	private Map<String, UserPerk> parseOffersResponse(User user,
 			JsonObject responseData) {
 		JsonArray offersArray = responseData
 				.getAsJsonArray(ModoDelegate.OFFERS);
-		List<UserPerk> userPerks = new ArrayList<>();
+		Map<String, UserPerk> userPerks = new HashMap<String, UserPerk>();
 		if (offersArray == null) {
 			return userPerks;
 		}
@@ -211,7 +207,7 @@ public class ModoServiceImpl implements ModoService {
 			redemptionDetails.addProperty("dateGiven", dateGiven);
 			redemptionDetails.addProperty("dateExpiry", dateExpiry);
 			userPerk.setRedemptionDetails(redemptionDetails.toString());
-			userPerks.add(userPerk);
+			userPerks.put(modoPerkId, userPerk);
 		}
 		return userPerks;
 	}

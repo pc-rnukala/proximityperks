@@ -60,11 +60,11 @@ public class PerkController {
 			// 1. for the given latitude and longitude get the list of merchants
 			// and location id
 			List<MerchantLocation> merchantLocations = modoService
-					.getMerchantLocations(longitude, latitude);
+					.getMerchantLocations(user, longitude, latitude);
 
 			// 2. iterate through the list of merchants and location and get the
 			// offers
-			List<UserPerk> allPerksForUser = new ArrayList<>();
+			Map<String, UserPerk> allPerksForUser = new HashMap<String, UserPerk>();
 			Map<String, MerchantLocation> merchantLocationMap = new HashMap<>();
 			for (MerchantLocation merchantLocation : merchantLocations) {
 				if (merchantLocation == null) {
@@ -76,12 +76,12 @@ public class PerkController {
 				if (merchantLocation.getLocationId() == null) {
 					continue;
 				}
-				List<UserPerk> userPerks = modoService.getOffers(user,
+				Map<String, UserPerk> userPerks = modoService.getOffers(user,
 						merchantLocation.getMerchantId(),
 						merchantLocation.getLocationId());
 				merchantLocationMap.put(merchantLocation.getMerchantId(),
 						merchantLocation);
-				allPerksForUser.addAll(userPerks);
+				allPerksForUser.putAll(userPerks);
 			}
 			// 3. persist the offers in the database and return back to the UI
 			if (allPerksForUser != null && allPerksForUser.isEmpty() == false) {
@@ -91,7 +91,14 @@ public class PerkController {
 							.getUserPerks(user);
 					if (existingUserPerks != null) {
 						for (UserPerk existinUserPerk : existingUserPerks) {
-							userPerkDao.deleteUserPerk(existinUserPerk);
+							if (allPerksForUser.containsKey(existinUserPerk
+									.getModoPerkId())) {
+								allPerksForUser.get(
+										existinUserPerk.getModoPerkId()).setId(
+										existinUserPerk.getId());
+							} else {
+								userPerkDao.deleteUserPerk(existinUserPerk);
+							}
 						}
 					}
 				} catch (Exception e) {
@@ -99,7 +106,7 @@ public class PerkController {
 							+ e.getMessage(), e);
 				}
 
-				for (UserPerk userPerk : allPerksForUser) {
+				for (UserPerk userPerk : allPerksForUser.values()) {
 					if (userPerk == null) {
 						continue;
 					}
