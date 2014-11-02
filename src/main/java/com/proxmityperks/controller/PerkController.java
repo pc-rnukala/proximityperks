@@ -185,10 +185,12 @@ public class PerkController {
 					"modoCheckoutCode").getAsString() : null;
 			Double checkoutAmount = o.get("amount") != null ? o.get("amount")
 					.getAsDouble() : null;
+			userPerk.setPerkStatus(UserPerkStatus.USED);
+			userPerkDao.saveOrUpdate(userPerk);
 			boolean redeemStatus = modoService.redeemPerk(user, userPerk,
 					checkoutAmount, checkoutCode);
 			header.put("userGuid", user.getUserGuid());
-			header.put("status", redeemStatus);
+			header.put("status", true);
 		} else {
 			errorList.add("Invalid user guid");
 			header.put("status", false);
