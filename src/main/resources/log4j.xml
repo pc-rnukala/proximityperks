@@ -132,7 +132,7 @@
 		<level value="info" />
 		<appender-ref ref="thirdparty" />
 	</logger>
-	<logger name="com.proximityperks" additivity="false">
+	<logger name="com.proxmityperks" additivity="false">
 		<level value="info" />
 		<appender-ref ref="main" />
 	</logger>

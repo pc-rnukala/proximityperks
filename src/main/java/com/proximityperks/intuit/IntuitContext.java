@@ -3,10 +3,10 @@ package com.proximityperks.intuit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.intuit.ipp.aggcat.core.Context;
+/*import com.intuit.ipp.aggcat.core.Context;
 import com.intuit.ipp.aggcat.core.OAuthAuthorizer;
 import com.intuit.ipp.aggcat.exception.AggCatException;
-import com.intuit.ipp.aggcat.service.AggCatService;
+import com.intuit.ipp.aggcat.service.AggCatService;*/
 
 public class IntuitContext {
 	private static final Logger logger = LoggerFactory
@@ -50,27 +50,17 @@ public class IntuitContext {
 	 * @return AggCatService
 	 * @throws AggCatException
 	 */
-	public AggCatService getAggCatService(String userId) throws AggCatException {
+	/*public AggCatService getAggCatService(String userId) throws AggCatException {
 		AggCatService service = null;
 		try {
-			/**
-			 * Creating the OAuthAuthorizer instance using
-			 * OAUTH_CONSUMER_KEY,OAUTH_CONSUMER_SECRET,SAML_PROVIDER_ID and
-			 * userId. In this step, the oAuth accesstoken,accesstokensecret are
-			 * generated and the OAuthAuthorizer instance is ready to use for
-			 * generating the context instance
-			 */
+			
 			OAuthAuthorizer oauthAuthorizer = new OAuthAuthorizer(
 					getOauthConsumerKey(), getOauthConsumerSecret(),
 					getSamlProviderId(), userId);
 
-			/**
-			 * Using the OAuthAuthorizer instance to create the context.
-			 */
+			
 			Context context = new Context(oauthAuthorizer);
-			/**
-			 * Using the context instance to create the AggCatService.
-			 */
+			
 			service = new AggCatService(context);
 
 		} catch (AggCatException ex) {
@@ -81,5 +71,5 @@ public class IntuitContext {
 		}
 		return service;
 
-	}
+	}*/
 }
