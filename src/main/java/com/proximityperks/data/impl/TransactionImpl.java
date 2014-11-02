@@ -373,8 +373,8 @@ public class TransactionImpl implements Transaction {
 	}
 
 	@Transient
-	public String getAmount() {
-		return ProximityPerksUtil.getFormattedAmount(transactionAmount);
+	public Double getAmount() {
+		return transactionAmount;
 	}
 
 	@Transient

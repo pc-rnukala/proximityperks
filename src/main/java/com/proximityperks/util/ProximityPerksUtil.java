@@ -19,7 +19,7 @@ public class ProximityPerksUtil {
 		}
 		String formattedDate = "";
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd");
+			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 			formattedDate = sdf.format(date);
 		} catch (Exception e) {
 			logger.error("Exception occurred", e);

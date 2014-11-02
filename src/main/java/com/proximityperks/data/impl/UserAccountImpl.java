@@ -236,7 +236,7 @@ public class UserAccountImpl implements UserAccount {
 	}
 
 	@Transient
-	public String getAmount() {
-		return ProximityPerksUtil.getFormattedAmount(this.balance);
+	public Double getAmount() {
+		return this.balance;
 	}
 }

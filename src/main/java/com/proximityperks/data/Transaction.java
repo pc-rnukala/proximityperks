@@ -69,7 +69,7 @@ public interface Transaction {
 
 	public String getTransactionDate();
 
-	public String getAmount();
+	public Double getAmount();
 
 	public boolean isCredit();
 
