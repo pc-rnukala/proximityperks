@@ -10,13 +10,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.proximityperks.dao.UserTransactionDao;
+import com.proximityperks.data.Transaction;
 
 public class UserTransactionDaoImpl extends DaoImpl implements
 		UserTransactionDao {
 
 	@SuppressWarnings("unchecked")
 	@Transactional(value = "proximityPerksTran", readOnly = true, propagation = Propagation.SUPPORTS)
-	public List<UserTransaction> getUserTransactions(List<Long> userAccountIds) {
+	public List<Transaction> getUserTransactions(List<Long> userAccountIds) {
 		if (userAccountIds == null || userAccountIds.isEmpty()) {
 			return null;
 		}
@@ -24,7 +25,7 @@ public class UserTransactionDaoImpl extends DaoImpl implements
 			final String queryString = "select model from TransactionImpl model where model.userAccountId in (:userAccountIds)";
 			Query query = em.createQuery(queryString);
 			query.setParameter("userAccountIds", userAccountIds);
-			List<UserTransaction> result = query.getResultList();
+			List<Transaction> result = query.getResultList();
 			if (result != null && result.size() > 0) {
 				return result;
 			} else {

@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proximityperks.data.User;
 
 /**
@@ -28,18 +30,23 @@ public class UserImpl implements User {
 	private String userGuid;
 	private String userName;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.User#getId()
 	 */
 	@Override
 	@Id
 	@Column(name = "user_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonProperty("userId")
 	public Long getId() {
 		return id;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.User#setId(java.lang.Long)
 	 */
 	@Override
@@ -47,16 +54,21 @@ public class UserImpl implements User {
 		this.id = id;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.User#getCreatedDate()
 	 */
 	@Override
 	@Column(name = "created_date")
+	@JsonIgnore
 	public Date getCreatedDate() {
 		return createdDate;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.User#setCreatedDate(java.util.Date)
 	 */
 	@Override
@@ -64,16 +76,21 @@ public class UserImpl implements User {
 		this.createdDate = createdDate;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.User#getUpdatedDate()
 	 */
 	@Override
 	@Column(name = "updated_date")
+	@JsonIgnore
 	public Date getUpdatedDate() {
 		return updatedDate;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.User#setUpdatedDate(java.util.Date)
 	 */
 	@Override
@@ -81,16 +98,21 @@ public class UserImpl implements User {
 		this.updatedDate = updatedDate;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.User#getModoAccountId()
 	 */
 	@Override
 	@Column(name = "modo_account_id")
+	@JsonIgnore
 	public String getModoAccountId() {
 		return modoAccountId;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.User#setModoAccountId(java.lang.String)
 	 */
 	@Override
@@ -98,16 +120,21 @@ public class UserImpl implements User {
 		this.modoAccountId = modoAccountId;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.User#getPassword()
 	 */
 	@Override
 	@Column(name = "password")
+	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.User#setPassword(java.lang.String)
 	 */
 	@Override
@@ -115,16 +142,21 @@ public class UserImpl implements User {
 		this.password = password;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.User#getPhoneNumber()
 	 */
 	@Override
 	@Column(name = "phone_number")
+	@JsonIgnore
 	public String getPhoneNumber() {
 		return phoneNumber;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.User#setPhoneNumber(java.lang.String)
 	 */
 	@Override
@@ -132,7 +164,9 @@ public class UserImpl implements User {
 		this.phoneNumber = phoneNumber;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.User#getUserGuid()
 	 */
 	@Override
@@ -141,7 +175,9 @@ public class UserImpl implements User {
 		return userGuid;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.User#setUserGuid(java.lang.String)
 	 */
 	@Override
@@ -149,7 +185,9 @@ public class UserImpl implements User {
 		this.userGuid = userGuid;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.User#getUserName()
 	 */
 	@Override
@@ -158,7 +196,9 @@ public class UserImpl implements User {
 		return userName;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.User#setUserName(java.lang.String)
 	 */
 	@Override

@@ -39,5 +39,6 @@ public interface UserAccount {
 	public abstract Date getDeletedDate();
 
 	public abstract void setDeletedDate(Date deletedDate);
+	public String getAmount();
 
 }

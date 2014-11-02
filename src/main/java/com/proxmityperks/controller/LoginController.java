@@ -24,7 +24,7 @@ import com.proximityperks.model.ProxmityPerksJsonModel;
 @Controller
 public class LoginController {
 	private static final Logger logger = LoggerFactory
-			.getLogger(EmployeeController.class);
+			.getLogger(LoginController.class);
 
 	@Autowired
 	private UserDao userDao;

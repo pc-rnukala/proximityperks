@@ -2,6 +2,11 @@ package com.proximityperks.data;
 
 import java.util.Date;
 
+import javax.persistence.Transient;
+
+import com.google.gson.JsonObject;
+import com.proximityperks.util.ProximityPerksUtil;
+
 public interface Transaction {
 
 	public abstract Long getId();
@@ -44,9 +49,9 @@ public interface Transaction {
 
 	public abstract void setMerchantCount(Integer merchantCount);
 
-	public abstract Date getTransactionDate();
+	public abstract Date getTransDate();
 
-	public abstract void setTransactionDate(Date transactionDate);
+	public abstract void setTransDate(Date transactionDate);
 
 	public abstract Integer getRank();
 
@@ -59,5 +64,13 @@ public interface Transaction {
 	public abstract Date getUpdatedDate();
 
 	public abstract void setUpdatedDate(Date updatedDate);
+
+	// public JsonObject toJson();
+
+	public String getTransactionDate();
+
+	public String getAmount();
+
+	public boolean isCredit();
 
 }

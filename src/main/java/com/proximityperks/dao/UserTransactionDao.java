@@ -2,8 +2,8 @@ package com.proximityperks.dao;
 
 import java.util.List;
 
-import javax.transaction.UserTransaction;
+import com.proximityperks.data.Transaction;
 
 public interface UserTransactionDao {
-	public List<UserTransaction> getUserTransactions(List<Long> userAccountIds);
+	public List<Transaction> getUserTransactions(List<Long> userAccountIds);
 }

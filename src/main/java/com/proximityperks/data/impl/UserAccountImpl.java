@@ -8,8 +8,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proximityperks.data.UserAccount;
+import com.proximityperks.util.ProximityPerksUtil;
 
 @Entity
 @Table(name = "USER_ACCOUNT")
@@ -34,6 +38,7 @@ public class UserAccountImpl implements UserAccount {
 	@Id
 	@Column(name = "user_account_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonProperty("userAccountId")
 	public Long getId() {
 		return id;
 	}
@@ -55,6 +60,7 @@ public class UserAccountImpl implements UserAccount {
 	 */
 	@Override
 	@Column(name = "user_id")
+	@JsonIgnore
 	public Long getUserId() {
 		return userId;
 	}
@@ -76,6 +82,7 @@ public class UserAccountImpl implements UserAccount {
 	 */
 	@Override
 	@Column(name = "name")
+	@JsonProperty("userAccountName")
 	public String getName() {
 		return name;
 	}
@@ -119,6 +126,7 @@ public class UserAccountImpl implements UserAccount {
 	 */
 	@Override
 	@Column(name = "balance")
+	@JsonIgnore
 	public Double getBalance() {
 		return balance;
 	}
@@ -141,6 +149,7 @@ public class UserAccountImpl implements UserAccount {
 	 */
 	@Override
 	@Column(name = "intuit_account_id")
+	@JsonIgnore
 	public String getIntuitAccountId() {
 		return intuitAccountId;
 	}
@@ -164,6 +173,7 @@ public class UserAccountImpl implements UserAccount {
 	 */
 	@Override
 	@Column(name = "created_date")
+	@JsonIgnore
 	public Date getCreatedDate() {
 		return createdDate;
 	}
@@ -186,6 +196,7 @@ public class UserAccountImpl implements UserAccount {
 	 */
 	@Override
 	@Column(name = "updated_date")
+	@JsonIgnore
 	public Date getUpdatedDate() {
 		return updatedDate;
 	}
@@ -208,6 +219,7 @@ public class UserAccountImpl implements UserAccount {
 	 */
 	@Override
 	@Column(name = "deleted_date")
+	@JsonIgnore
 	public Date getDeletedDate() {
 		return deletedDate;
 	}
@@ -221,5 +233,10 @@ public class UserAccountImpl implements UserAccount {
 	@Override
 	public void setDeletedDate(Date deletedDate) {
 		this.deletedDate = deletedDate;
+	}
+
+	@Transient
+	public String getAmount() {
+		return ProximityPerksUtil.getFormattedAmount(this.balance);
 	}
 }

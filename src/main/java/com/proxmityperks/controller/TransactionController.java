@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.transaction.UserTransaction;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +19,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.proximityperks.dao.UserAccountDao;
 import com.proximityperks.dao.UserDao;
 import com.proximityperks.dao.UserTransactionDao;
+import com.proximityperks.data.Transaction;
 import com.proximityperks.data.User;
 import com.proximityperks.data.UserAccount;
-import com.proximityperks.data.impl.UserImpl;
 import com.proximityperks.model.ProxmityPerksJsonModel;
 
 @Controller
 public class TransactionController {
 	private static final Logger logger = LoggerFactory
-			.getLogger(EmployeeController.class);
+			.getLogger(TransactionController.class);
 
 	@Autowired
 	private UserDao userDao;
@@ -57,7 +55,7 @@ public class TransactionController {
 			List<UserAccount> userAccounts = userAccountDao.getAccounts(user
 					.getId());
 			List<Long> userAccountIds = new ArrayList<Long>();
-			List<UserTransaction> userTransactions = null;
+			List<Transaction> userTransactions = null;
 			if (userAccounts != null) {
 				for (UserAccount userAccount : userAccounts) {
 					userAccountIds.add(userAccount.getId());
@@ -79,4 +77,12 @@ public class TransactionController {
 		header.put("errorList", errorList);
 		return model;
 	}
+
+	/*private List<String> convertListToJson(List<Transaction> userTransactions) {
+		List<String> array = new ArrayList<String>();
+		for (Transaction userTransaction : userTransactions) {
+			array.add(userTransaction.toJson());
+		}
+		return array;
+	}*/
 }
