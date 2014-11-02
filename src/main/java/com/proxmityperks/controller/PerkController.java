@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +30,8 @@ import com.proximityperks.modo.service.ModoService;
 @Controller
 public class PerkController {
 	private static final Logger logger = LoggerFactory
-			.getLogger(PerkController.class);
-	ExecutorService executor = Executors.newFixedThreadPool(10);
+			.getLogger(EmployeeController.class);
+
 	@Autowired
 	private UserDao userDao;
 
@@ -44,25 +40,6 @@ public class PerkController {
 
 	@Autowired
 	private ModoService modoService;
-
-	class ModoServiceCallableSync implements Callable<Map<String, UserPerk>> {
-		private User user;
-		private String merchantId;
-		private String locationId;
-
-		ModoServiceCallableSync(User user, String merchantId, String locationId) {
-			this.user = user;
-			this.merchantId = merchantId;
-			this.locationId = locationId;
-		}
-
-		@Override
-		public Map<String, UserPerk> call() throws Exception {
-			Map<String, UserPerk> userPerks = modoService.getOffers(user,
-					merchantId, locationId);
-			return userPerks;
-		}
-	}
 
 	@RequestMapping(value = APIRequestMappings.GET_PERKS, method = RequestMethod.POST)
 	public @ResponseBody
@@ -77,21 +54,13 @@ public class PerkController {
 		Map<String, Object> data = new HashMap<String, Object>();
 		model.setSpData(data);
 		List<String> errorList = new ArrayList<String>();
-		long startTime = System.currentTimeMillis();
 		User user = userDao.getUserByGuid(userGuid);
-		long longTime = System.currentTimeMillis();
-		logger.info("getUserByGuid consumed :{} ms", (longTime - startTime));
-		List<Future<Map<String, UserPerk>>> list = new ArrayList<Future<Map<String, UserPerk>>>();
 		if (user != null) {
 			header.put("status", true);
 			// 1. for the given latitude and longitude get the list of merchants
 			// and location id
-			long startTime1 = System.currentTimeMillis();
 			List<MerchantLocation> merchantLocations = modoService
 					.getMerchantLocations(user, longitude, latitude);
-			long longTime1 = System.currentTimeMillis();
-			logger.info("getMerchantLocations consumed :{} ms",
-					(longTime1 - startTime1));
 
 			// 2. iterate through the list of merchants and location and get the
 			// offers
@@ -107,37 +76,13 @@ public class PerkController {
 				if (merchantLocation.getLocationId() == null) {
 					continue;
 				}
-				// long startTime2 = System.currentTimeMillis();
-				ModoServiceCallableSync callable = new ModoServiceCallableSync(
-						user, merchantLocation.getMerchantId(),
+				Map<String, UserPerk> userPerks = modoService.getOffers(user,
+						merchantLocation.getMerchantId(),
 						merchantLocation.getLocationId());
-				
-				Future<Map<String, UserPerk>> future = executor.submit(callable);
-	            //add Future to the list, we can get return value using Future
-	            list.add(future);
-	            merchantLocationMap.put(merchantLocation.getMerchantId(),
-	   				 merchantLocation);
-				/*
-				 * Map<String, UserPerk> userPerks = modoService.getOffers(user,
-				 * merchantLocation.getMerchantId(),
-				 * merchantLocation.getLocationId()); long longTime2 =
-				 * System.currentTimeMillis();
-				 * logger.info("getOffers consumed :{} ms", (longTime2 -
-				 * startTime2));
-				 * merchantLocationMap.put(merchantLocation.getMerchantId(),
-				 * merchantLocation); allPerksForUser.putAll(userPerks);
-				 */
+				merchantLocationMap.put(merchantLocation.getMerchantId(),
+						merchantLocation);
+				allPerksForUser.putAll(userPerks);
 			}
-			
-			for(Future<Map<String, UserPerk>> future : list){
-	            try {
-	            	Map<String, UserPerk> userPerks = future.get();
-	            	allPerksForUser.putAll(userPerks);
-	            } catch (Exception e) {
-	              logger.error("Exception occured ",e);
-	            }
-	        }
-			
 			// 3. persist the offers in the database and return back to the UI
 			if (allPerksForUser != null && allPerksForUser.isEmpty() == false) {
 				// remove all the old perks for the users
@@ -240,12 +185,10 @@ public class PerkController {
 					"modoCheckoutCode").getAsString() : null;
 			Double checkoutAmount = o.get("amount") != null ? o.get("amount")
 					.getAsDouble() : null;
-			userPerk.setPerkStatus(UserPerkStatus.USED);
-			userPerkDao.saveOrUpdate(userPerk);
 			boolean redeemStatus = modoService.redeemPerk(user, userPerk,
 					checkoutAmount, checkoutCode);
 			header.put("userGuid", user.getUserGuid());
-			header.put("status", true);
+			header.put("status", redeemStatus);
 		} else {
 			errorList.add("Invalid user guid");
 			header.put("status", false);
