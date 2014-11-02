@@ -15,6 +15,7 @@
 		<class>com.proximityperks.data.impl.TransactionImpl</class>
 		<class>com.proximityperks.data.impl.UserAccountImpl</class>
 		<class>com.proximityperks.data.impl.UserPerkImpl</class>
+		<class>com.proximityperks.modo.delegate.MerchantLocation</class>
 		<properties>
 			<!-- Added this to produce formatted sql statements -->
 			<property name="hibernate.format_sql" value="false" />

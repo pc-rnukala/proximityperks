@@ -1,13 +1,10 @@
 package com.proximityperks.controller;
 
-import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.Charset;
-import java.util.UUID;
 
 import junit.framework.Assert;
 
@@ -50,6 +47,7 @@ public class TestPerkController {
 
 	@Test
 	public void testGetPerks() throws Exception {
+		long startTime = System.currentTimeMillis();
 		String userName = "user1@personalcapital.com";
 		String password = "password";
 		ResultActions resultActions = mockMvc.perform(post(
@@ -66,33 +64,34 @@ public class TestPerkController {
 		String userGuid = userGuidValue;
 		Assert.assertNotNull(userGuid);
 		resultActions = mockMvc.perform(post(APIRequestMappings.GET_PERKS)
-				.param("userGuid", userGuid).param("latitude", 36.1061975 + "")
-				.param("longitude", -115.1786685 + ""));
+				.param("userGuid", userGuid).param("latitude", 36.1061671 + "")
+				.param("longitude", -115.1785757 + ""));
 		resultActions.andExpect(status().isOk());
 		resultActions.andExpect(content().contentType(APPLICATION_JSON_UTF8));
 		result = resultActions.andReturn();
 		response = result.getResponse();
 		resultStr = response.getContentAsString();
 		Assert.assertNotNull(resultStr);
-
-		resultActions = mockMvc.perform(post(
-				APIRequestMappings.VISIT_PERK_LOCATION).param("userGuid",
-				userGuid).param("perkId", 9 + ""));
-		resultActions.andExpect(status().isOk());
-		resultActions.andExpect(content().contentType(APPLICATION_JSON_UTF8));
-		result = resultActions.andReturn();
-		response = result.getResponse();
-		resultStr = response.getContentAsString();
-		Assert.assertNotNull(resultStr);
-
-		resultActions = mockMvc.perform(post(APIRequestMappings.REDEEM_PERKS)
-				.param("userGuid", userGuid).param("perkId", 9 + ""));
-		resultActions.andExpect(status().isOk());
-		resultActions.andExpect(content().contentType(APPLICATION_JSON_UTF8));
-		result = resultActions.andReturn();
-		response = result.getResponse();
-		resultStr = response.getContentAsString();
-		Assert.assertNotNull(resultStr);
+		System.out.println("TimeTaken: "
+				+ (System.currentTimeMillis() - startTime) + "");
+		/*
+		 * resultActions = mockMvc.perform(post(
+		 * APIRequestMappings.VISIT_PERK_LOCATION).param("userGuid",
+		 * userGuid).param("perkId", 9 + ""));
+		 * resultActions.andExpect(status().isOk());
+		 * resultActions.andExpect(content
+		 * ().contentType(APPLICATION_JSON_UTF8)); result =
+		 * resultActions.andReturn(); response = result.getResponse(); resultStr
+		 * = response.getContentAsString(); Assert.assertNotNull(resultStr);
+		 * 
+		 * resultActions = mockMvc.perform(post(APIRequestMappings.REDEEM_PERKS)
+		 * .param("userGuid", userGuid).param("perkId", 9 + ""));
+		 * resultActions.andExpect(status().isOk());
+		 * resultActions.andExpect(content
+		 * ().contentType(APPLICATION_JSON_UTF8)); result =
+		 * resultActions.andReturn(); response = result.getResponse(); resultStr
+		 * = response.getContentAsString(); Assert.assertNotNull(resultStr);
+		 */
 
 	}
 }

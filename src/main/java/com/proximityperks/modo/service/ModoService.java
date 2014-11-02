@@ -1,6 +1,7 @@
 package com.proximityperks.modo.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.proximityperks.data.User;
 import com.proximityperks.data.UserPerk;
@@ -16,9 +17,9 @@ public interface ModoService {
 
 	public LocationVisitResponse visitLocation(User user, UserPerk userPerk);
 
-	public List<UserPerk> getOffers(User user, String merchantId,
+	public Map<String, UserPerk> getOffers(User user, String merchantId,
 			String locationId);
 
-	public List<MerchantLocation> getMerchantLocations(double longitude,
-			double latitude);
+	public List<MerchantLocation> getMerchantLocations(User user,
+			double longitude, double latitude);
 }
