@@ -49,7 +49,7 @@ public class TestLoginController {
 
 	@Test
 	public void testLoginUser() throws Exception {
-		String userName = "testUserId1@personalcapital.com";
+		String userName = "user1@personalcapital.com";
 		String password = "password";
 		ResultActions resultActions = mockMvc.perform(post(
 				APIRequestMappings.LOGIN_USER).param("userName", userName)

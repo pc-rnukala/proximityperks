@@ -50,7 +50,7 @@ public class TestTransactionController {
 
 	@Test
 	public void testGetTransactions() throws Exception {
-		String userName = "user1_sf@personalcapital.com";
+		String userName = "user1@personalcapital.com";
 		String password = "password";
 		ResultActions resultActions = mockMvc.perform(post(
 				APIRequestMappings.LOGIN_USER).param("userName", userName)
