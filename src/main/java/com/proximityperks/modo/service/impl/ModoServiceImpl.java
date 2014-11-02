@@ -103,6 +103,8 @@ public class ModoServiceImpl implements ModoService {
 		}
 		// user Checkout
 		UserCheckOutRequest userCheckoutRequest = new UserCheckOutRequest();
+		userCheckoutRequest.setAccountId(user.getModoAccountId());
+		userCheckoutRequest.setCheckoutCode(checkoutCode);
 		boolean isUserCheckoutStatus = modoDelegate
 				.userCheckout(userCheckoutRequest);
 		try {
@@ -127,9 +129,9 @@ public class ModoServiceImpl implements ModoService {
 	 */
 	public List<MerchantLocation> getMerchantLocations(double longitude,
 			double latitude) {
-		List<MerchantLocation> merchantLocations = modoDelegate.getMerchants(
-				longitude, latitude);
-		merchantLocations = new ArrayList<>();
+		/*List<MerchantLocation> merchantLocations = modoDelegate.getMerchants(
+				longitude, latitude);*/
+		List<MerchantLocation> merchantLocations = new ArrayList<>();
 		MerchantLocation merchantLocation = new MerchantLocation();
 		merchantLocation.setMerchantId("8161fa6cd0c24c6ab9606252713ab571");
 		merchantLocation.setMerchantName("Starbucks Aria");
@@ -161,7 +163,7 @@ public class ModoServiceImpl implements ModoService {
 		offerRequest.setLocationId(locationId);
 		List<String> statusFilter = new ArrayList<>();
 		statusFilter.add("live");
-		statusFilter.add("used");
+		// statusFilter.add("used");
 		offerRequest.setStatusFilter(new Gson().toJson(statusFilter));
 		List<String> giverFilter = new ArrayList<>();
 		giverFilter.add("user");

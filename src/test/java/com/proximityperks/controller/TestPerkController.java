@@ -75,14 +75,24 @@ public class TestPerkController {
 		resultStr = response.getContentAsString();
 		Assert.assertNotNull(resultStr);
 
-		/*
-		 * resultActions = mockMvc.perform(post(
-		 * APIRequestMappings.VISIT_PERK_LOCATION).param("userGuid", userGuid));
-		 * resultActions.andExpect(status().isOk());
-		 * resultActions.andExpect(content
-		 * ().contentType(APPLICATION_JSON_UTF8)); result =
-		 * resultActions.andReturn(); response = result.getResponse(); resultStr
-		 * = response.getContentAsString(); Assert.assertNotNull(resultStr);
-		 */
+		resultActions = mockMvc.perform(post(
+				APIRequestMappings.VISIT_PERK_LOCATION).param("userGuid",
+				userGuid).param("perkId", 9 + ""));
+		resultActions.andExpect(status().isOk());
+		resultActions.andExpect(content().contentType(APPLICATION_JSON_UTF8));
+		result = resultActions.andReturn();
+		response = result.getResponse();
+		resultStr = response.getContentAsString();
+		Assert.assertNotNull(resultStr);
+
+		resultActions = mockMvc.perform(post(APIRequestMappings.REDEEM_PERKS)
+				.param("userGuid", userGuid).param("perkId", 9 + ""));
+		resultActions.andExpect(status().isOk());
+		resultActions.andExpect(content().contentType(APPLICATION_JSON_UTF8));
+		result = resultActions.andReturn();
+		response = result.getResponse();
+		resultStr = response.getContentAsString();
+		Assert.assertNotNull(resultStr);
+
 	}
 }

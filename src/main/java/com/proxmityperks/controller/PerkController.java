@@ -174,9 +174,10 @@ public class PerkController {
 			JsonParser parser = new JsonParser();
 			JsonObject o = (JsonObject) parser.parse(redemptionDetails
 					.toString());
-			String checkoutCode = o.get("checkout_code") != null ? o.get(
-					"checkout_code").getAsString() : null;
-			Double checkoutAmount = Double.valueOf("0.00");
+			String checkoutCode = o.get("modoCheckoutCode") != null ? o.get(
+					"modoCheckoutCode").getAsString() : null;
+			Double checkoutAmount = o.get("amount") != null ? o.get("amount")
+					.getAsDouble() : null;
 			boolean redeemStatus = modoService.redeemPerk(user, userPerk,
 					checkoutAmount, checkoutCode);
 			header.put("userGuid", user.getUserGuid());
@@ -209,6 +210,22 @@ public class PerkController {
 			LocationVisitResponse locationVisitResposne = modoService
 					.visitLocation(user, userPerk);
 			if (locationVisitResposne != null) {
+				try {
+					String redemptionDetails = userPerk.getRedemptionDetails();
+					JsonParser parser = new JsonParser();
+					JsonObject o = (JsonObject) parser.parse(redemptionDetails
+							.toString());
+					o.addProperty("modoCheckoutCode",
+							locationVisitResposne.getCheckoutCode());
+					o.addProperty("barCode",
+							locationVisitResposne.getBarcodeImageData());
+					userPerk.setRedemptionDetails(o.toString());
+					userPerkDao.saveOrUpdate(userPerk);
+				} catch (Exception e) {
+					logger.error(
+							"Exception while procesing the redemption details: "
+									+ e.getMessage(), e);
+				}
 				data.put("modoCheckoutCode",
 						locationVisitResposne.getCheckoutCode());
 				data.put("barCode", locationVisitResposne.getBarcodeImageData());
