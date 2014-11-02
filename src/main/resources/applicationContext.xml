@@ -18,4 +18,5 @@
 	<import resource="classpath:proximityperks-datasource.xml" />
 	<import resource="classpath:proximityperks-common.xml" />
 	<import resource="classpath:proximityperks-modoservices.xml" />
+	<import resource="classpath:proximityperks-intuit.xml" />
 </beans>
