@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,7 +22,7 @@ public class UserPerkImpl implements UserPerk {
 	private Long userId;
 	private String merchantId;
 	private String locationId;
-	private String perkStatus;
+	private UserPerkStatus perkStatus;
 	private String latitude;
 	private String longitude;
 	private String redemptionDetails;
@@ -28,7 +30,9 @@ public class UserPerkImpl implements UserPerk {
 	private Date updatedDate;
 	private Date deletedDate;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.UserPerk#getId()
 	 */
 	@Override
@@ -39,7 +43,9 @@ public class UserPerkImpl implements UserPerk {
 		return id;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.UserPerk#setId(java.lang.Long)
 	 */
 	@Override
@@ -47,7 +53,9 @@ public class UserPerkImpl implements UserPerk {
 		this.id = id;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.UserPerk#getModoPerkId()
 	 */
 	@Override
@@ -56,15 +64,20 @@ public class UserPerkImpl implements UserPerk {
 		return modoPerkId;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.proximityperks.data.impl.UserPerk#setModoPerkId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.proximityperks.data.impl.UserPerk#setModoPerkId(java.lang.String)
 	 */
 	@Override
 	public void setModoPerkId(String modoPerkId) {
 		this.modoPerkId = modoPerkId;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.UserPerk#getUserId()
 	 */
 	@Override
@@ -73,7 +86,9 @@ public class UserPerkImpl implements UserPerk {
 		return userId;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.UserPerk#setUserId(java.lang.Long)
 	 */
 	@Override
@@ -81,7 +96,9 @@ public class UserPerkImpl implements UserPerk {
 		this.userId = userId;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.UserPerk#getMerchantId()
 	 */
 	@Override
@@ -90,15 +107,20 @@ public class UserPerkImpl implements UserPerk {
 		return merchantId;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.proximityperks.data.impl.UserPerk#setMerchantId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.proximityperks.data.impl.UserPerk#setMerchantId(java.lang.String)
 	 */
 	@Override
 	public void setMerchantId(String merchantId) {
 		this.merchantId = merchantId;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.UserPerk#getLocationId()
 	 */
 	@Override
@@ -107,32 +129,43 @@ public class UserPerkImpl implements UserPerk {
 		return locationId;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.proximityperks.data.impl.UserPerk#setLocationId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.proximityperks.data.impl.UserPerk#setLocationId(java.lang.String)
 	 */
 	@Override
 	public void setLocationId(String locationId) {
 		this.locationId = locationId;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.UserPerk#getPerkStatus()
 	 */
 	@Override
 	@Column(name = "perk_status")
-	public String getPerkStatus() {
+	@Enumerated(EnumType.STRING)
+	public UserPerkStatus getPerkStatus() {
 		return perkStatus;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.proximityperks.data.impl.UserPerk#setPerkStatus(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.proximityperks.data.impl.UserPerk#setPerkStatus(java.lang.String)
 	 */
 	@Override
-	public void setPerkStatus(String perkStatus) {
+	public void setPerkStatus(UserPerkStatus perkStatus) {
 		this.perkStatus = perkStatus;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.UserPerk#getLatitude()
 	 */
 	@Override
@@ -141,7 +174,9 @@ public class UserPerkImpl implements UserPerk {
 		return latitude;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.UserPerk#setLatitude(java.lang.String)
 	 */
 	@Override
@@ -149,7 +184,9 @@ public class UserPerkImpl implements UserPerk {
 		this.latitude = latitude;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.UserPerk#getLongitude()
 	 */
 	@Override
@@ -158,7 +195,9 @@ public class UserPerkImpl implements UserPerk {
 		return longitude;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.UserPerk#setLongitude(java.lang.String)
 	 */
 	@Override
@@ -166,7 +205,9 @@ public class UserPerkImpl implements UserPerk {
 		this.longitude = longitude;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.UserPerk#getRedemptionDetails()
 	 */
 	@Override
@@ -175,15 +216,21 @@ public class UserPerkImpl implements UserPerk {
 		return redemptionDetails;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.proximityperks.data.impl.UserPerk#setRedemptionDetails(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.proximityperks.data.impl.UserPerk#setRedemptionDetails(java.lang.
+	 * String)
 	 */
 	@Override
 	public void setRedemptionDetails(String redemptionDetails) {
 		this.redemptionDetails = redemptionDetails;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.UserPerk#getCreatedDate()
 	 */
 	@Override
@@ -192,7 +239,9 @@ public class UserPerkImpl implements UserPerk {
 		return createdDate;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.UserPerk#setCreatedDate(java.util.Date)
 	 */
 	@Override
@@ -200,7 +249,9 @@ public class UserPerkImpl implements UserPerk {
 		this.createdDate = createdDate;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.UserPerk#getUpdatedDate()
 	 */
 	@Override
@@ -209,7 +260,9 @@ public class UserPerkImpl implements UserPerk {
 		return updatedDate;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.UserPerk#setUpdatedDate(java.util.Date)
 	 */
 	@Override
@@ -217,7 +270,9 @@ public class UserPerkImpl implements UserPerk {
 		this.updatedDate = updatedDate;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.UserPerk#getDeletedDate()
 	 */
 	@Override
@@ -226,7 +281,9 @@ public class UserPerkImpl implements UserPerk {
 		return deletedDate;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.proximityperks.data.impl.UserPerk#setDeletedDate(java.util.Date)
 	 */
 	@Override

@@ -2,6 +2,8 @@ package com.proximityperks.data;
 
 import java.util.Date;
 
+import com.proximityperks.data.impl.UserPerkStatus;
+
 public interface UserPerk {
 
 	public abstract Long getId();
@@ -24,9 +26,9 @@ public interface UserPerk {
 
 	public abstract void setLocationId(String locationId);
 
-	public abstract String getPerkStatus();
+	public UserPerkStatus getPerkStatus();
 
-	public abstract void setPerkStatus(String perkStatus);
+	public void setPerkStatus(UserPerkStatus userPerkStatus);
 
 	public abstract String getLatitude();
 

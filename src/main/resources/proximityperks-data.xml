@@ -13,4 +13,5 @@
 	<bean id="userDao" class="com.proximityperks.dao.impl.UserDaoImpl" />
 	<bean id="userTransactionDao" class="com.proximityperks.dao.impl.UserTransactionDaoImpl" />
 	<bean id="userAccountDao" class="com.proximityperks.dao.impl.UserAccountDaoImpl" />
+	<bean id="userPerkDao" class="com.proximityperks.dao.impl.UserPerkDaoImpl" />
 </beans>

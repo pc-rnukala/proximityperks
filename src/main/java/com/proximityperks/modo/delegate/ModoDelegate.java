@@ -18,6 +18,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -31,14 +32,22 @@ public class ModoDelegate {
 	public static final String REGISTER_USER_API = "people/register";
 	public static final String ADD_CARD_API = "card/add";
 	public static final String OFFER_LOOKUP_API = "offer/lookup";
+	public static final String MERCHANT_API = "merchant/list";
 	public static final String GIFT_SEND_API = "gift/send";
 	public static final String LOCATION_VIST_API = "location/visit";
 	public static final String DELETE_GIFT_API = "gift/delete";
+	public static final String LOCATION_FIND_API = "location/find";
+	public static final String LOCATION_CHECKOUT_API = "location/checkout";
+	public static final String USER_CHECKOUT_API = "location/user_checkout";
 	public static final String TOKEN_API = "token";
 	public static final String CREDENTIALS = "credentials";
 	public static final String RESPONSE_DATA = "response_data";
+	public static final String OFFERS = "offers";
 	public static final String ACCESS_TOKEN = "access_token";
 	public static final String ACCOUNT_ID = "account_id";
+	public static final String CHECKOUT_CODE = "checkout_code";
+	public static final String BAR_CODE_IMAGE_STRING = "barcode_image_data";
+	public static final String CHECKOUT_AMOUNT = "checkout_amount";
 	public static final String PHONE = "phone";
 	public static final String FNAME = "fname";
 	public static final String LNAME = "lname";
@@ -324,11 +333,12 @@ public class ModoDelegate {
 	 * 
 	 * @param offerRequest
 	 */
-	public void getOffers(OfferRequest offerRequest) {
+	public JsonObject getOffers(OfferRequest offerRequest) {
 
 		CloseableHttpClient client = null;
 		CloseableHttpResponse response = null;
 		String line = "";
+		JsonObject responseData = null;
 		StringBuilder responseString = new StringBuilder();
 		try {
 			// get the http client
@@ -378,6 +388,7 @@ public class ModoDelegate {
 			if (statusCode.equals("0") == false) {
 				throw new Exception();
 			}
+			responseData = o.getAsJsonObject(RESPONSE_DATA);
 		} catch (IOException e) {
 			logger.error(
 					"Exception while fetching the getToken: " + e.getMessage(),
@@ -406,6 +417,7 @@ public class ModoDelegate {
 			}
 
 		}
+		return responseData;
 	}
 
 	/**
@@ -413,11 +425,14 @@ public class ModoDelegate {
 	 * 
 	 * @param locationVisitRequest
 	 */
-	public void locationVisit(LocationVisitRequest locationVisitRequest) {
-
+	public LocationVisitResponse locationVisit(
+			LocationVisitRequest locationVisitRequest) {
+		LocationVisitResponse locationVisitResponse = new LocationVisitResponse();
 		CloseableHttpClient client = null;
 		CloseableHttpResponse response = null;
 		String line = "";
+		String checkoutCode = "";
+		String barcodeImageData = "";
 		StringBuilder responseString = new StringBuilder();
 		try {
 			// get the http client
@@ -464,6 +479,19 @@ public class ModoDelegate {
 			if (statusCode.equals("0") == false) {
 				throw new Exception();
 			}
+			JsonObject responseData = o.getAsJsonObject(RESPONSE_DATA);
+			if (responseData != null) {
+				JsonElement checkoutCodeResponse = responseData
+						.get(CHECKOUT_CODE);
+				checkoutCode = checkoutCodeResponse != null ? checkoutCodeResponse
+						.getAsString() : null;
+				locationVisitResponse.setCheckoutCode(checkoutCode);
+				JsonElement barCodeImageResponse = responseData
+						.get(BAR_CODE_IMAGE_STRING);
+				barcodeImageData = barCodeImageResponse != null ? barCodeImageResponse
+						.getAsString() : null;
+				locationVisitResponse.setBarcodeImageData(barcodeImageData);
+			}
 		} catch (IOException e) {
 			logger.error(
 					"Exception while fetching the getToken: " + e.getMessage(),
@@ -492,6 +520,8 @@ public class ModoDelegate {
 			}
 
 		}
+
+		return locationVisitResponse;
 
 	}
 
@@ -574,4 +604,388 @@ public class ModoDelegate {
 
 	}
 
+	public void locationFind(double latitude, double longitude) {
+
+		CloseableHttpClient client = null;
+		CloseableHttpResponse response = null;
+		String line = "";
+		StringBuilder responseString = new StringBuilder();
+		try {
+			// get the http client
+			client = HttpClients.createDefault();
+			String accessToken = getModoToken();
+			// construct modo api
+			HttpPost post = new HttpPost(BASE_MODO_API + LOCATION_FIND_API);
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+			nameValuePairs.add(new BasicNameValuePair(CONSUMER_KEY,
+					CONSUMER_KEY_VALUE));
+			nameValuePairs
+					.add(new BasicNameValuePair(ACCESS_TOKEN, accessToken));
+			nameValuePairs.add(new BasicNameValuePair("method", "GPS_EXTENTS"));
+			nameValuePairs.add(new BasicNameValuePair("latitude", String
+					.valueOf(latitude)));
+			nameValuePairs.add(new BasicNameValuePair("longitude", String
+					.valueOf(longitude)));
+			nameValuePairs.add(new BasicNameValuePair("east_west_extent",
+					"10000"));
+			nameValuePairs.add(new BasicNameValuePair("north_south_extent",
+					"10000"));
+			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			// Execute the modo post
+			response = client.execute(post);
+			BufferedReader rd = new BufferedReader(new InputStreamReader(
+					response.getEntity().getContent()));
+			/*
+			 * Read the line by line response from modo
+			 */
+			while ((line = rd.readLine()) != null) {
+				responseString.append(line);
+			}
+			/*
+			 * Parse the api response to fetch the access token
+			 */
+			JsonParser parser = new JsonParser();
+			JsonObject o = (JsonObject) parser.parse(responseString.toString());
+			String statusCode = o.get("status_code") != null ? o.get(
+					"status_code").getAsString() : null;
+			logger.info("Status Code: " + statusCode);
+			if (statusCode.equals("0") == false) {
+				throw new Exception();
+			}
+
+			JsonObject responseData = o.getAsJsonObject(RESPONSE_DATA);
+			if (responseData != null) {
+				JsonArray locations = responseData.getAsJsonArray("locations");
+				for (JsonElement element : locations) {
+					JsonObject locationJson = element.getAsJsonObject();
+
+				}
+			}
+		} catch (IOException e) {
+			logger.error("Exception while deleteGift: " + e.getMessage(), e);
+		} catch (Exception e) {
+			logger.error("Exception while processing deleteGift Request: "
+					+ e.getMessage());
+		} finally {
+			if (response != null) {
+				try {
+					response.close();
+				} catch (Exception e) {
+					logger.error(
+							"Exception while closing the response: "
+									+ e.getMessage(), e);
+				}
+			}
+
+			if (client != null) {
+				try {
+					client.close();
+				} catch (Exception e) {
+					logger.error("Exception while closing the http Client: "
+							+ e.getMessage(), e);
+				}
+			}
+
+		}
+
+	}
+
+	/**
+	 * Returns true if everything is fine otherwise returns false
+	 * 
+	 * @param locationCheckoutRequest
+	 * @return
+	 */
+	public boolean locationCheckout(
+			LocationCheckoutRequest locationCheckoutRequest) {
+
+		CloseableHttpClient client = null;
+		CloseableHttpResponse response = null;
+		String line = "";
+		StringBuilder responseString = new StringBuilder();
+		try {
+			// get the http client
+			client = HttpClients.createDefault();
+			String accessToken = getModoToken();
+			// construct modo api
+			HttpPost post = new HttpPost(BASE_MODO_API + LOCATION_CHECKOUT_API);
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+			nameValuePairs.add(new BasicNameValuePair(CONSUMER_KEY,
+					CONSUMER_KEY_VALUE));
+			nameValuePairs
+					.add(new BasicNameValuePair(ACCESS_TOKEN, accessToken));
+			nameValuePairs.add(new BasicNameValuePair(ACCOUNT_ID,
+					locationCheckoutRequest.getAccountId()));
+			nameValuePairs.add(new BasicNameValuePair(CHECKOUT_CODE,
+					locationCheckoutRequest.getCheckoutCode()));
+			nameValuePairs.add(new BasicNameValuePair(CHECKOUT_AMOUNT,
+					locationCheckoutRequest.getCheckoutAmount()));
+			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			// Execute the modo post
+			response = client.execute(post);
+			BufferedReader rd = new BufferedReader(new InputStreamReader(
+					response.getEntity().getContent()));
+			/*
+			 * Read the line by line response from modo
+			 */
+			while ((line = rd.readLine()) != null) {
+				responseString.append(line);
+			}
+			/*
+			 * Parse the api response to fetch the access token
+			 */
+			JsonParser parser = new JsonParser();
+			JsonObject o = (JsonObject) parser.parse(responseString.toString());
+			String statusCode = o.get("status_code") != null ? o.get(
+					"status_code").getAsString() : null;
+			logger.info("Status Code: " + statusCode);
+			if (statusCode.equals("0") == false) {
+				throw new Exception();
+			}
+			return true;
+
+		} catch (IOException e) {
+			logger.error("Exception while deleteGift: " + e.getMessage(), e);
+		} catch (Exception e) {
+			logger.error("Exception while processing deleteGift Request: "
+					+ e.getMessage());
+		} finally {
+			if (response != null) {
+				try {
+					response.close();
+				} catch (Exception e) {
+					logger.error(
+							"Exception while closing the response: "
+									+ e.getMessage(), e);
+				}
+			}
+
+			if (client != null) {
+				try {
+					client.close();
+				} catch (Exception e) {
+					logger.error("Exception while closing the http Client: "
+							+ e.getMessage(), e);
+				}
+			}
+
+		}
+		return false;
+	}
+
+	/**
+	 * This method returns false if everything is successful
+	 * 
+	 * @param userCheckoutRequest
+	 * @return
+	 */
+	public boolean userCheckout(UserCheckOutRequest userCheckoutRequest) {
+
+		CloseableHttpClient client = null;
+		CloseableHttpResponse response = null;
+		String line = "";
+		StringBuilder responseString = new StringBuilder();
+		try {
+			// get the http client
+			client = HttpClients.createDefault();
+			String accessToken = getModoToken();
+			// construct modo api
+			HttpPost post = new HttpPost(BASE_MODO_API + USER_CHECKOUT_API);
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+			nameValuePairs.add(new BasicNameValuePair(CONSUMER_KEY,
+					CONSUMER_KEY_VALUE));
+			nameValuePairs
+					.add(new BasicNameValuePair(ACCESS_TOKEN, accessToken));
+			nameValuePairs.add(new BasicNameValuePair(ACCOUNT_ID,
+					userCheckoutRequest.getAccountId()));
+			nameValuePairs.add(new BasicNameValuePair(CHECKOUT_CODE,
+					userCheckoutRequest.getCheckoutCode()));
+			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			// Execute the modo post
+			response = client.execute(post);
+			BufferedReader rd = new BufferedReader(new InputStreamReader(
+					response.getEntity().getContent()));
+			/*
+			 * Read the line by line response from modo
+			 */
+			while ((line = rd.readLine()) != null) {
+				responseString.append(line);
+			}
+			/*
+			 * Parse the api response to fetch the access token
+			 */
+			JsonParser parser = new JsonParser();
+			JsonObject o = (JsonObject) parser.parse(responseString.toString());
+			String statusCode = o.get("status_code") != null ? o.get(
+					"status_code").getAsString() : null;
+			logger.info("Status Code: " + statusCode);
+			if (statusCode.equals("0") == false) {
+				throw new Exception();
+			}
+			return true;
+
+		} catch (IOException e) {
+			logger.error("Exception while deleteGift: " + e.getMessage(), e);
+		} catch (Exception e) {
+			logger.error("Exception while processing deleteGift Request: "
+					+ e.getMessage());
+		} finally {
+			if (response != null) {
+				try {
+					response.close();
+				} catch (Exception e) {
+					logger.error(
+							"Exception while closing the response: "
+									+ e.getMessage(), e);
+				}
+			}
+
+			if (client != null) {
+				try {
+					client.close();
+				} catch (Exception e) {
+					logger.error("Exception while closing the http Client: "
+							+ e.getMessage(), e);
+				}
+			}
+
+		}
+		return false;
+
+	}
+
+	/**
+	 * This method is used fetch the merchant locations for the given longitude
+	 * and latitude
+	 * 
+	 * @param longitude
+	 * @param latitude
+	 * @return
+	 */
+	public List<MerchantLocation> getMerchants(double longitude, double latitude) {
+
+		CloseableHttpClient client = null;
+		CloseableHttpResponse response = null;
+		String line = "";
+		JsonArray responseDataArray = null;
+		List<MerchantLocation> merchantLocations = new ArrayList<>();
+		StringBuilder responseString = new StringBuilder();
+		try {
+			// get the http client
+			client = HttpClients.createDefault();
+			String accessToken = getModoToken();
+			// construct modo api
+			HttpPost post = new HttpPost(BASE_MODO_API + MERCHANT_API);
+			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+			nameValuePairs.add(new BasicNameValuePair(CONSUMER_KEY,
+					CONSUMER_KEY_VALUE));
+			nameValuePairs
+					.add(new BasicNameValuePair(ACCESS_TOKEN, accessToken));
+			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			// Execute the modo post
+			response = client.execute(post);
+			BufferedReader rd = new BufferedReader(new InputStreamReader(
+					response.getEntity().getContent()));
+			/*
+			 * Read the line by line response from modo
+			 */
+			while ((line = rd.readLine()) != null) {
+				responseString.append(line);
+			}
+			/*
+			 * Parse the api response to fetch the access token
+			 */
+			JsonParser parser = new JsonParser();
+			JsonObject o = (JsonObject) parser.parse(responseString.toString());
+			String statusCode = o.get("status_code") != null ? o.get(
+					"status_code").getAsString() : null;
+			logger.info("Status Code: " + statusCode);
+			if (statusCode.equals("0") == false) {
+				throw new Exception();
+			}
+			responseDataArray = o.getAsJsonArray(RESPONSE_DATA);
+			for (JsonElement jsonElement : responseDataArray) {
+				if (jsonElement == null) {
+					continue;
+				}
+				JsonObject merchantElement = jsonElement.getAsJsonObject();
+				if (merchantElement == null) {
+					continue;
+				}
+				String merchantName = jsonElement.getAsJsonObject().get(
+						"merchant_name") != null ? jsonElement
+						.getAsJsonObject().get("merchant_name").getAsString()
+						: null;
+				String merchantId = merchantElement.get("merchant_id") != null ? merchantElement
+						.get("merchant_id").getAsString() : null;
+				if (merchantElement != null
+						&& merchantElement.get("locations") != null) {
+					JsonArray locationsArray = merchantElement
+							.getAsJsonArray("locations");
+					if (locationsArray != null) {
+						for (JsonElement locationElement : locationsArray) {
+							if (locationElement == null) {
+								continue;
+							}
+							JsonObject locationJson = locationElement
+									.getAsJsonObject();
+							if (locationJson == null) {
+								continue;
+							}
+							Double receivedLatitude = locationJson
+									.get("latitude") != null ? locationJson
+									.get("latitude").getAsDouble() : null;
+							Double receivedLongitude = locationJson
+									.get("longitude") != null ? locationJson
+									.get("longitude").getAsDouble() : null;
+							if (receivedLatitude == null
+									|| receivedLongitude == null) {
+								continue;
+							}
+							String locationId = locationJson.get("locationId") != null ? locationJson
+									.get("locationId").getAsString() : null;
+
+							if (receivedLatitude == latitude
+									&& receivedLongitude == longitude) {
+								MerchantLocation merchantLocation = new MerchantLocation();
+								merchantLocation.setLocationId(locationId);
+								merchantLocation.setMerchantId(merchantId);
+								merchantLocation.setMerchantName(merchantName);
+								merchantLocations.add(merchantLocation);
+							}
+						}
+					}
+				}
+			}
+		} catch (IOException e) {
+			logger.error(
+					"Exception while fetching the getToken: " + e.getMessage(),
+					e);
+		} catch (Exception e) {
+			logger.error("Exception while processing addCard Request: "
+					+ e.getMessage());
+		} finally {
+			if (response != null) {
+				try {
+					response.close();
+				} catch (Exception e) {
+					logger.error(
+							"Exception while closing the response: "
+									+ e.getMessage(), e);
+				}
+			}
+
+			if (client != null) {
+				try {
+					client.close();
+				} catch (Exception e) {
+					logger.error("Exception while closing the http Client: "
+							+ e.getMessage(), e);
+				}
+			}
+
+		}
+		return merchantLocations;
+
+	}
 }
