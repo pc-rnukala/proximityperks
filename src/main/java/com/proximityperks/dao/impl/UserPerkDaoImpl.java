@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.proximityperks.dao.UserPerkDao;
 import com.proximityperks.data.User;
 import com.proximityperks.data.UserPerk;
+import com.proximityperks.data.impl.UserPerkImpl;
+import com.proximityperks.data.impl.UserPerkStatus;
 
 public class UserPerkDaoImpl extends DaoImpl implements UserPerkDao {
 
@@ -36,6 +38,27 @@ public class UserPerkDaoImpl extends DaoImpl implements UserPerkDao {
 	public List<UserPerk> getUserPerks(final User user) {
 		try {
 			final String queryString = "select model from UserPerkImpl model where model.userId=:userId";
+			Query query = em.createQuery(queryString);
+			query.setParameter("userId", user.getId());
+			List<UserPerk> result = query.getResultList();
+			if (result != null && result.size() > 0) {
+				return result;
+			} else {
+				return null;
+			}
+		} catch (RuntimeException re) {
+			logger.error("getUserPerks", re);
+			throw re;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Transactional(value = "proximityPerksTran", readOnly = true, propagation = Propagation.SUPPORTS)
+	public List<UserPerk> getUserPerks(final User user,
+			final UserPerkStatus userPerkStatus) {
+		try {
+			final String queryString = "select model from UserPerkImpl model where model.userId=:userId and model.perkStatus='"
+					+ userPerkStatus.name() + "'";
 			Query query = em.createQuery(queryString);
 			query.setParameter("userId", user.getId());
 			List<UserPerk> result = query.getResultList();
@@ -88,7 +111,9 @@ public class UserPerkDaoImpl extends DaoImpl implements UserPerkDao {
 			return false;
 		}
 		try {
-			em.remove(userPerk);
+			UserPerk existingUserPerk = em.find(UserPerkImpl.class,
+					userPerk.getId());
+			em.remove(existingUserPerk);
 			return true;
 		} catch (Exception e) {
 			return false;

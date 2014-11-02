@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.proximityperks.data.User;
 import com.proximityperks.data.UserPerk;
+import com.proximityperks.data.impl.UserPerkStatus;
 
 public interface UserPerkDao {
 
@@ -16,5 +17,8 @@ public interface UserPerkDao {
 	public UserPerk getUserPerkById(Long userPerkId);
 
 	public List<UserPerk> getUserPerks(final User user);
+
+	public List<UserPerk> getUserPerks(final User user,
+			final UserPerkStatus userPerkStatus);
 
 }

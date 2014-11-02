@@ -21,6 +21,7 @@ import com.proximityperks.dao.UserDao;
 import com.proximityperks.dao.UserPerkDao;
 import com.proximityperks.data.User;
 import com.proximityperks.data.UserPerk;
+import com.proximityperks.data.impl.UserPerkStatus;
 import com.proximityperks.model.ProxmityPerksJsonModel;
 import com.proximityperks.modo.delegate.LocationVisitResponse;
 import com.proximityperks.modo.delegate.MerchantLocation;
@@ -113,7 +114,8 @@ public class PerkController {
 			}
 			// 4. get all the offers from database and jsonize and return it to
 			// user
-			List<UserPerk> perksToReturn = userPerkDao.getUserPerks(user);
+			List<UserPerk> perksToReturn = userPerkDao.getUserPerks(user,
+					UserPerkStatus.ACTIVE);
 			List<PerkJsonizer> perkJsonizers = new ArrayList<>();
 			for (UserPerk userPerk : perksToReturn) {
 				if (userPerk == null) {
