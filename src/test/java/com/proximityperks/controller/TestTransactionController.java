@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.jayway.jsonpath.JsonPath;
 import com.proxmityperks.controller.APIRequestMappings;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -60,22 +61,23 @@ public class TestTransactionController {
 		MockHttpServletResponse response = result.getResponse();
 		String resultStr = response.getContentAsString();
 		Assert.assertNotNull(resultStr);
-		String userGuid="10001";
-		
-		resultActions = mockMvc.perform(post(
-				APIRequestMappings.GET_ACCOUNTS).param("userGuid", userGuid)
-				);
+		String userGuidValue = JsonPath.read(resultStr,
+				"$.spData.user.userGuid");
+		String userGuid = userGuidValue;
+		Assert.assertNotNull(userGuid);
+
+		resultActions = mockMvc.perform(post(APIRequestMappings.GET_ACCOUNTS)
+				.param("userGuid", userGuid));
 		resultActions.andExpect(status().isOk());
 		resultActions.andExpect(content().contentType(APPLICATION_JSON_UTF8));
 		result = resultActions.andReturn();
 		response = result.getResponse();
 		resultStr = response.getContentAsString();
 		Assert.assertNotNull(resultStr);
-		
-		
+
 		resultActions = mockMvc.perform(post(
-				APIRequestMappings.GET_TRANSACTIONS).param("userGuid", userGuid)
-				);
+				APIRequestMappings.GET_TRANSACTIONS)
+				.param("userGuid", userGuid));
 		resultActions.andExpect(status().isOk());
 		resultActions.andExpect(content().contentType(APPLICATION_JSON_UTF8));
 		result = resultActions.andReturn();

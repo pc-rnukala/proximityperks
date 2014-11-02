@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.UUID;
 
 import junit.framework.Assert;
@@ -26,6 +27,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.jayway.jsonpath.JsonPath;
 import com.proxmityperks.controller.APIRequestMappings;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -60,7 +62,9 @@ public class TestAccountController {
 		MockHttpServletResponse response = result.getResponse();
 		String resultStr = response.getContentAsString();
 		Assert.assertNotNull(resultStr);
-		String userGuid="10001";
+		String userGuidValue = JsonPath.read(resultStr, "$.spData.user.userGuid");
+		String userGuid=userGuidValue;
+		Assert.assertNotNull(userGuid);
 		
 		resultActions = mockMvc.perform(post(
 				APIRequestMappings.GET_ACCOUNTS).param("userGuid", userGuid)
