@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<intuit-config>
+	<saml>
+		<keystoreFile>keystore.jks</keystoreFile>
+		<keystorePassword>admin123</keystorePassword>
+		<keyPassword>admin123</keyPassword>
+		<certAlias>myapp</certAlias>
+	</saml>
+</intuit-config>
