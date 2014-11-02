@@ -380,7 +380,9 @@ public class TransactionImpl implements Transaction {
 	@Transient
 	@JsonProperty("isCredit")
 	public boolean isCredit() {
-		return false;
+		return this.transactionType != null
+				&& this.transactionType.equalsIgnoreCase("credit") ? true
+				: false;
 	}
 
 	/*
